@@ -57,6 +57,47 @@ chmod 600 config/keys.json          # then fill in your Emporia username/passwor
 
 Note: MFA/2FA-enabled Emporia accounts are not supported by pyemvue's SRP flow.
 
+## Auth with Apple
+
+If you created your Emporia account with **Sign in with Apple** (or Google), it
+is a *federated* identity: Apple manages the password and **Emporia never stores
+one**. That is why the app correctly says the password "cannot be reset" — there
+is no Emporia-side password to reset. pyemvue signs in to Emporia's Cognito pool
+with an email + password, so that path does not work for an SSO account as-is.
+
+You do **not** need to add any Sign-in-with-Apple / OAuth code — pyemvue already
+supports a token-based login, and this tool wires it up. Pick one of two paths.
+
+### Option A — set a native password on the same email (preferred, durable)
+
+Use the Emporia create-account / sign-up flow (website or app) with the **same
+email** as your Apple sign-in and set a password, then use `config/keys.json` as
+in [Setup](#setup). A native password lets the tool re-authenticate indefinitely.
+If the sign-up flow rejects the email, use Option B — or create a separate
+email+password account and share your devices to it from the Emporia app.
+
+### Option B — supply Cognito tokens (no password needed)
+
+pyemvue also accepts an `id_token` / `access_token` / `refresh_token` trio, and
+`connect()` checks `config/token_cache.json` **before** `config/keys.json`:
+
+```bash
+cp config/token_cache.example.json config/token_cache.json
+chmod 600 config/token_cache.json
+```
+
+1. Sign in with Apple at <https://web.emporiaenergy.com> in a desktop browser.
+2. Open DevTools (F12) → **Application/Storage** → **IndexedDB** →
+   `com.amplify.awsCognitoAuthPlugin` → `default.store`.
+3. Copy the values of the keys ending in `.hostedUi.idToken`,
+   `.hostedUi.accessToken`, and `.hostedUi.refreshToken` (each starts with
+   `eyJ`) into the three fields of `config/token_cache.json`.
+
+pyemvue rewrites `token_cache.json` as the tokens rotate. Cognito tokens are
+finite-lived: if the refresh token is eventually revoked, `connect()` fails with
+a clear error and you re-extract the three values. Both `keys.json` and
+`token_cache.json` are git-ignored — keep them out of version control.
+
 ## Usage
 
 ```bash

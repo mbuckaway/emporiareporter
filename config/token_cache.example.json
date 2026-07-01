@@ -1,0 +1,6 @@
+{
+  "_comment": "Token-based auth for a FEDERATED Emporia account (Sign in with Apple / Google) that has NO password. Copy this to config/token_cache.json (git-ignored, chmod 600) and replace the three values with your Cognito tokens. connect() tries token_cache.json BEFORE keys.json, so no keys.json/password is needed on this path. Get the tokens: sign in with Apple at https://web.emporiaenergy.com in Chrome/Edge/Firefox, open DevTools (F12) -> Application/Storage -> IndexedDB -> com.amplify.awsCognitoAuthPlugin -> default.store, and copy the values of the keys ending in .hostedUi.idToken, .hostedUi.accessToken, and .hostedUi.refreshToken (each starts with 'eyJ'). Tokens are finite-lived: the refresh_token keeps the session alive and pyemvue rewrites this file as tokens rotate, but if it is revoked, connect() will error and you re-extract these three values. If you can instead set a native password on the same email, prefer keys.json (more durable).",
+  "id_token": "eyJREPLACE_WITH_YOUR_ID_TOKEN",
+  "access_token": "eyJREPLACE_WITH_YOUR_ACCESS_TOKEN",
+  "refresh_token": "eyJREPLACE_WITH_YOUR_REFRESH_TOKEN"
+}
