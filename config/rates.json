@@ -1,0 +1,62 @@
+{
+  "_comment": "Ontario OEB Regulated Price Plan COMMODITY prices for a Guelph/Alectra residential customer. Province-wide (identical across utilities). Prices reset each Nov 1; the TOU/ULO hour windows and the Tiered threshold flip each May 1 and Nov 1 while amounts hold. All values $/kWh. Sources: oeb.ca newsroom 2023/2024/2025, alectrautilities.com. Edit via `emporia-hydro rates set|import|update`; used OFFLINE on every run.",
+  "timezone": "America/Toronto",
+  "plans": {
+    "tou": {
+      "prices": [
+        {"effective": "2025-11-01", "expiry": "2026-10-31", "off": 0.098, "mid": 0.157, "on": 0.203, "confidence": "high"},
+        {"effective": "2024-11-01", "expiry": "2025-10-31", "off": 0.076, "mid": 0.122, "on": 0.158, "confidence": "high"},
+        {"effective": "2023-11-01", "expiry": "2024-10-31", "off": 0.087, "mid": 0.122, "on": 0.182, "confidence": "high"},
+        {"effective": "2022-11-01", "expiry": "2023-10-31", "off": 0.074, "mid": 0.102, "on": 0.151, "confidence": "low"}
+      ]
+    },
+    "ulo": {
+      "prices": [
+        {"effective": "2025-11-01", "expiry": "2026-10-31", "overnight": 0.039, "weekend_off": 0.098, "mid": 0.157, "on": 0.391, "confidence": "high"},
+        {"effective": "2024-11-01", "expiry": "2025-10-31", "overnight": 0.028, "weekend_off": 0.076, "mid": 0.122, "on": 0.284, "confidence": "high"},
+        {"effective": "2023-11-01", "expiry": "2024-10-31", "overnight": 0.028, "weekend_off": 0.087, "mid": 0.122, "on": 0.286, "confidence": "high"}
+      ]
+    },
+    "tiered": {
+      "prices": [
+        {"effective": "2025-11-01", "expiry": "2026-10-31", "tier1": 0.120, "tier2": 0.142, "confidence": "high"},
+        {"effective": "2024-11-01", "expiry": "2025-10-31", "tier1": 0.093, "tier2": 0.110, "confidence": "high"},
+        {"effective": "2023-11-01", "expiry": "2024-10-31", "tier1": 0.103, "tier2": 0.125, "confidence": "high"}
+      ],
+      "thresholds": {"summer_kwh": 600, "winter_kwh": 1000}
+    }
+  },
+  "seasons": {
+    "summer": {"start": "05-01", "end": "10-31"},
+    "winter": {"start": "11-01", "end": "04-30"}
+  },
+  "schedule": {
+    "_comment": "Weekday hour->bucket segments as [start_hour, end_hour) in local wall-clock. Weekends and observed holidays are entirely off-peak (TOU) / weekend_off (ULO), except ULO overnight which always applies. ULO hours are year-round (no season switch).",
+    "tou": {
+      "summer": {"on": [[11, 17]], "mid": [[7, 11], [17, 19]], "off": [[0, 7], [19, 24]]},
+      "winter": {"on": [[7, 11], [17, 19]], "mid": [[11, 17]], "off": [[0, 7], [19, 24]]}
+    },
+    "ulo": {
+      "overnight": [[0, 7], [23, 24]],
+      "on": [[16, 21]],
+      "mid": [[7, 16], [21, 23]],
+      "weekend_off": [[7, 23]]
+    }
+  },
+  "holidays": {
+    "_comment": "OEB observed statutory holidays = off-peak all day. If a holiday lands on a weekend, the next non-holiday weekday is off-peak. August Civic Holiday IS included; Remembrance Day is NOT. Rules resolved per year in code; add explicit YYYY-MM-DD dates here to override.",
+    "rules": [
+      {"name": "New Year's Day", "type": "fixed", "month": 1, "day": 1},
+      {"name": "Family Day", "type": "nth_weekday", "month": 2, "weekday": 0, "n": 3},
+      {"name": "Good Friday", "type": "good_friday"},
+      {"name": "Victoria Day", "type": "monday_before", "month": 5, "day": 25},
+      {"name": "Canada Day", "type": "fixed", "month": 7, "day": 1},
+      {"name": "Civic Holiday", "type": "nth_weekday", "month": 8, "weekday": 0, "n": 1},
+      {"name": "Labour Day", "type": "nth_weekday", "month": 9, "weekday": 0, "n": 1},
+      {"name": "Thanksgiving", "type": "nth_weekday", "month": 10, "weekday": 0, "n": 2},
+      {"name": "Christmas Day", "type": "fixed", "month": 12, "day": 25},
+      {"name": "Boxing Day", "type": "fixed", "month": 12, "day": 26}
+    ],
+    "overrides": []
+  }
+}

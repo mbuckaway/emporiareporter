@@ -1,0 +1,43 @@
+<!--
+Copyright (c) 2026 Mark Buckaway. All rights reserved.
+Licensed under the MIT license. See LICENSE file in the project root for full text.
+-->
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Emporia Hydro{% endblock %}</title>
+  <link rel="stylesheet" href="{{ asset_prefix|default('') }}static/app.css">
+</head>
+<body class="skin">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="border-tl surface" style="border-bottom-width: 1px; padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between;">
+    <a href="{{ asset_prefix|default('') }}index.html" style="font-weight: 600; text-decoration: none; color: inherit;">Emporia Hydro</a>
+    <button type="button" data-testid="theme-toggle" aria-label="Toggle color theme" class="border-tl" style="border-width: 1px; border-radius: var(--radius-md); padding: 0.5rem 0.75rem; background: transparent; cursor: pointer;">
+      Theme
+    </button>
+  </header>
+  <main id="main" style="padding: 1.5rem;">
+    {% block content %}{% endblock %}
+  </main>
+  <script>
+    (function () {
+      "use strict";
+      var toggle = document.querySelector('[data-testid="theme-toggle"]');
+      if (!toggle) {
+        return;
+      }
+      var root = document.documentElement;
+      var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      toggle.addEventListener("click", function () {
+        var current = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+        if (reduceMotion) {
+          root.style.transition = "none";
+        }
+        root.setAttribute("data-theme", current);
+      });
+    })();
+  </script>
+</body>
+</html>

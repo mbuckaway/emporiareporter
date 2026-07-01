@@ -1,0 +1,8 @@
+{
+  "_comment": "Local tool settings. billing_cycle.mode: 'calendar_month' (default), 'anchor_day' (day: 1-28, ~monthly periods from that meter-read day), or 'explicit' (periods: list of [start,end] ISO dates). current_plan is the plan you are on today (used to frame savings). server binds localhost only.",
+  "timezone": "America/Toronto",
+  "current_plan": "tou",
+  "billing_cycle": {"mode": "calendar_month"},
+  "server": {"host": "127.0.0.1", "port": 8765},
+  "output": {"reports_dir": "reports", "data_dir": "data"}
+}

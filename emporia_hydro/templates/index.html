@@ -1,0 +1,38 @@
+<!--
+Copyright (c) 2026 Mark Buckaway. All rights reserved.
+Licensed under the MIT license. See LICENSE file in the project root for full text.
+-->
+{% extends "base.html" %}
+{% block title %}Emporia Hydro - Reports{% endblock %}
+{% block content %}
+<h1 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem;">Reports</h1>
+
+<p style="margin-bottom: 1.5rem;">
+  <a href="ytd.html">Year-to-date summary</a>
+</p>
+
+{% if manifest %}
+<table style="width: 100%; border-collapse: collapse;">
+  <thead>
+    <tr>
+      <th style="text-align: left;">Period</th>
+      <th style="text-align: right;">kWh</th>
+      <th style="text-align: left;">Report</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for entry in manifest %}
+    <tr>
+      <td>{{ entry.label }}</td>
+      <td style="text-align: right;">{{ "%.1f"|format(entry.kwh) if entry.kwh is defined else "" }}</td>
+      <td><a href="reports/{{ entry.label }}.html">View report</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="rounded-lg border border-tl surface p-6" data-testid="index-empty-state">
+  <p>No reports yet. Run the <code>report</code> command to generate your first billing-cycle report.</p>
+</div>
+{% endif %}
+{% endblock %}

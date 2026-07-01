@@ -1,0 +1,35 @@
+[project]
+name = "emporia-hydro"
+version = "0.1.0"
+description = "Emporia Vue -> Guelph/Ontario hydro cost, plan optimizer, bill prediction, trends, and local HTML dashboard"
+requires-python = ">=3.14"
+dependencies = [
+    "pyemvue==0.18.9",
+    "jinja2>=3.1",
+    "matplotlib>=3.9",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-cov>=5", "hypothesis>=6"]
+
+[project.scripts]
+emporia-hydro = "emporia_hydro.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["emporia_hydro"]
+
+[tool.pytest.ini_options]
+addopts = "--cov=emporia_hydro --cov-branch --cov-report=term-missing --cov-fail-under=90"
+testpaths = ["tests"]
+filterwarnings = ["error::DeprecationWarning:emporia_hydro.*"]
+
+[tool.ruff]
+target-version = "py314"
+line-length = 99
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]

@@ -1,0 +1,5 @@
+{
+  "_comment": "Copy to keys.json (git-ignored, chmod 600) and fill in your Emporia app login. keys.json holds ONLY these credentials and is never modified by the tool; pyemvue caches its id/access/refresh tokens separately in config/token_cache.json (also git-ignored), and connect() falls back to these credentials whenever that cached token is missing or expired. MFA/2FA accounts are not supported by pyemvue's SRP flow.",
+  "username": "you@example.com",
+  "password": "your-emporia-password"
+}

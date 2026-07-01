@@ -1,0 +1,75 @@
+<!--
+Copyright (c) 2026 Mark Buckaway. All rights reserved.
+Licensed under the MIT license. See LICENSE file in the project root for full text.
+-->
+{% extends "base.html" %}
+{% block title %}Year to date - Emporia Hydro{% endblock %}
+{% block content %}
+<h1 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem;">Year to date {{ ytd.year }}</h1>
+<p class="text-muted" style="margin-bottom: 1rem;">Through {{ ytd.through.isoformat() }}</p>
+
+<section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+  <div class="rounded-lg border border-tl surface p-6">
+    <p class="text-muted" style="font-size: 0.75rem; text-transform: uppercase;">Whole-home kWh</p>
+    <p style="font-size: 1.875rem; font-weight: 700;">{{ "%.1f"|format(ytd.whole_home_kwh) }}</p>
+  </div>
+  <div class="rounded-lg border border-tl surface p-6">
+    <p class="text-muted" style="font-size: 0.75rem; text-transform: uppercase;">Whole-home commodity cost</p>
+    <p style="font-size: 1.875rem; font-weight: 700;">${{ "%.2f"|format(ytd.whole_home_commodity) }}</p>
+  </div>
+  <div class="rounded-lg border border-tl surface p-6">
+    <p class="text-muted" style="font-size: 0.75rem; text-transform: uppercase;">Full bill total (est.)</p>
+    <p style="font-size: 1.875rem; font-weight: 700;">${{ "%.2f"|format(ytd.full_total) }}</p>
+  </div>
+</section>
+
+<section class="rounded-lg border border-tl surface p-6" style="margin-bottom: 1.5rem;">
+  <h2 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem;">Monthly rollup</h2>
+  <table data-testid="ytd-monthly-table" style="width: 100%; border-collapse: collapse;">
+    <thead>
+      <tr>
+        <th style="text-align: left;">Month</th>
+        <th style="text-align: right;">kWh</th>
+        <th style="text-align: right;">Commodity cost</th>
+        <th style="text-align: right;">Full total</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for month in ytd.months %}
+      <tr>
+        <td>{{ month.label }}</td>
+        <td style="text-align: right;">{{ "%.2f"|format(month.kwh) }}</td>
+        <td style="text-align: right;">${{ "%.2f"|format(month.commodity_cost) }}</td>
+        <td style="text-align: right;">${{ "%.2f"|format(month.full_total) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<section class="rounded-lg border border-tl surface p-6">
+  <h2 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem;">Per-device year to date</h2>
+  <table style="width: 100%; border-collapse: collapse;">
+    <thead>
+      <tr>
+        <th style="text-align: left;">Channel</th>
+        <th style="text-align: left;">Name</th>
+        <th style="text-align: left;">Role</th>
+        <th style="text-align: right;">kWh</th>
+        <th style="text-align: right;">Cost</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for device in ytd.by_device %}
+      <tr>
+        <td>{{ device.channel_num }}</td>
+        <td>{{ device.name }}</td>
+        <td>{{ device.role }}</td>
+        <td style="text-align: right;">{{ "%.2f"|format(device.kwh) }}</td>
+        <td style="text-align: right;">${{ "%.2f"|format(device.cost) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

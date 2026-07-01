@@ -1,0 +1,88 @@
+/*
+ * Copyright (c) 2026 Mark Buckaway. All rights reserved.
+ * Licensed under the MIT license. See LICENSE file in the project root for full text.
+ *
+ * Tailwind v4 input stylesheet. Design tokens mirror the TrailLens webui
+ * (webui/packages/webapp/src/index.css) so reports match that look. Built to a
+ * standalone static/app.css via the Tailwind v4 CLI (no Node at view time):
+ *   .bin/tailwindcss -i emporia_hydro/assets/theme.css -o emporia_hydro/assets/static/app.css --minify
+ */
+
+@import "tailwindcss";
+
+/* Scan the report templates so used utilities are emitted. */
+@source "../templates";
+
+@theme {
+  --color-bg: #fafafa;
+  --color-surface: #ffffff;
+  --color-fg: #212121;
+  --color-fg-muted: #757575;
+  --color-primary: #2e7d32;
+  --color-primary-fg: #ffffff;
+  --color-secondary: #1976d2;
+  --color-error: #d32f2f;
+  --color-error-fg: #ffffff;
+  --color-success: #4caf50;
+  --color-warning: #f57f17;
+  --color-border: #e0e0e0;
+  --color-overlay: rgba(0, 0, 0, 0.04);
+  --color-scrim: rgba(0, 0, 0, 0.5);
+
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+  --radius-full: 9999px;
+
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+/* Dark theme: override the token values; utilities reference them via var(). */
+[data-theme="dark"] {
+  --color-bg: #0a0a0a;
+  --color-surface: #11181a;
+  --color-fg: #e0e0e0;
+  --color-fg-muted: #a0a0a0;
+  --color-primary: #4caf50;
+  --color-primary-fg: #0a0a0a;
+  --color-secondary: #64b5f6;
+  --color-error: #ef5350;
+  --color-error-fg: #0a0a0a;
+  --color-success: #66bb6a;
+  --color-warning: #ffb74d;
+  --color-border: #2a3033;
+  --color-overlay: rgba(255, 255, 255, 0.04);
+  --color-scrim: rgba(0, 0, 0, 0.7);
+}
+
+/* Give every report table readable cell spacing so right-aligned numeric
+ * columns don't abut the next column (e.g. the plan-comparison table). */
+@layer base {
+  th,
+  td {
+    padding: 0.4rem 0.75rem;
+    vertical-align: baseline;
+  }
+}
+
+/* Custom utilities carried over from the webui design system. */
+@layer utilities {
+  .skin {
+    background: var(--color-bg);
+    color: var(--color-fg);
+  }
+  .surface {
+    background: var(--color-surface);
+  }
+  .border-tl {
+    border-color: var(--color-border);
+  }
+  .text-muted {
+    color: var(--color-fg-muted);
+  }
+}

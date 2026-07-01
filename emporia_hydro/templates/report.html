@@ -1,0 +1,125 @@
+<!--
+Copyright (c) 2026 Mark Buckaway. All rights reserved.
+Licensed under the MIT license. See LICENSE file in the project root for full text.
+-->
+{% extends "base.html" %}
+{% block title %}Report {{ label }} - Emporia Hydro{% endblock %}
+{% block content %}
+<h1 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem;">Billing period {{ label }}</h1>
+
+<section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+  <div class="rounded-lg border border-tl surface p-6" data-testid="kpi-period-kwh">
+    <p class="text-muted" style="font-size: 0.75rem; text-transform: uppercase;">Period kWh</p>
+    <p style="font-size: 1.875rem; font-weight: 700;">{{ "%.1f"|format(period_kwh) }}</p>
+  </div>
+  <div class="rounded-lg border border-tl surface p-6" data-testid="kpi-period-energy">
+    <p class="text-muted" style="font-size: 0.75rem; text-transform: uppercase;">Period energy cost</p>
+    <p style="font-size: 1.875rem; font-weight: 700;">${{ "%.2f"|format(period_energy_cost) }}</p>
+  </div>
+  <div class="rounded-lg border border-tl surface p-6" data-testid="kpi-period-full">
+    <p class="text-muted" style="font-size: 0.75rem; text-transform: uppercase;">Period full bill (est.)</p>
+    <p style="font-size: 1.875rem; font-weight: 700;">${{ "%.2f"|format(period_full_cost) }}</p>
+  </div>
+  <div class="rounded-lg border border-tl surface p-6" data-testid="kpi-predicted-energy">
+    <p class="text-muted" style="font-size: 0.75rem; text-transform: uppercase;">Predicted energy cost</p>
+    <p style="font-size: 1.875rem; font-weight: 700;">${{ "%.2f"|format(prediction.predicted_energy_cost) }}</p>
+  </div>
+  <div class="rounded-lg border border-tl surface p-6" data-testid="kpi-predicted-full">
+    <p class="text-muted" style="font-size: 0.75rem; text-transform: uppercase;">Predicted full bill (est.)</p>
+    <p style="font-size: 1.875rem; font-weight: 700;">${{ "%.2f"|format(prediction.predicted_full.total) }}</p>
+  </div>
+  <div class="rounded-lg border border-tl surface p-6" data-testid="kpi-recommended-plan">
+    <p class="text-muted" style="font-size: 0.75rem; text-transform: uppercase;">Recommended plan</p>
+    <p style="font-size: 1.875rem; font-weight: 700; text-transform: uppercase;">{{ recommended_plan }}</p>
+    <p class="text-muted">Save ${{ "%.2f"|format(savings_vs_current) }} vs {{ comparison.current_plan|upper }}</p>
+  </div>
+</section>
+
+<section class="rounded-lg border border-tl surface p-6" style="margin-bottom: 1.5rem;">
+  <h2 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem;">Per-device cost</h2>
+  <table data-testid="device-cost-table" style="width: 100%; border-collapse: collapse;">
+    <thead>
+      <tr>
+        <th style="text-align: left;">Channel</th>
+        <th style="text-align: left;">Name</th>
+        <th style="text-align: left;">Role</th>
+        <th style="text-align: right;">kWh</th>
+        <th style="text-align: right;">Cost</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for channel_num, channel_cost in cost.by_channel.items() %}
+      <tr>
+        <td>{{ channel_cost.channel_num }}</td>
+        <td>{{ channel_cost.name }}</td>
+        <td>{{ channel_cost.role }}</td>
+        <td style="text-align: right;">{{ "%.2f"|format(channel_cost.kwh) }}</td>
+        <td style="text-align: right;">${{ "%.2f"|format(channel_cost.cost) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<section class="rounded-lg border border-tl surface p-6" style="margin-bottom: 1.5rem;">
+  <h2 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem;">Daily trend</h2>
+  <table data-testid="daily-trend-table" style="width: 100%; border-collapse: collapse;">
+    <thead>
+      <tr>
+        <th style="text-align: left;">Day</th>
+        <th style="text-align: right;">kWh</th>
+        <th style="text-align: right;">On</th>
+        <th style="text-align: right;">Mid</th>
+        <th style="text-align: right;">Off</th>
+        <th style="text-align: right;">Cost</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for day in day_stats %}
+      <tr>
+        <td>{{ day.day.isoformat() }}</td>
+        <td style="text-align: right;">{{ "%.2f"|format(day.kwh) }}</td>
+        <td style="text-align: right;">{{ "%.2f"|format(day.on_kwh) }}</td>
+        <td style="text-align: right;">{{ "%.2f"|format(day.mid_kwh) }}</td>
+        <td style="text-align: right;">{{ "%.2f"|format(day.off_kwh) }}</td>
+        <td style="text-align: right;">${{ "%.2f"|format(day.cost) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% if chart_paths.daily %}
+  <img src="{{ asset_prefix|default('') }}{{ chart_paths.daily }}" alt="Daily kWh and rolling average chart" style="max-width: 100%; margin-top: 1rem;">
+  {% endif %}
+</section>
+
+<section class="rounded-lg border border-tl surface p-6">
+  <h2 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem;">Plan comparison</h2>
+  <table style="width: 100%; border-collapse: collapse; margin-bottom: 1rem;">
+    <thead>
+      <tr>
+        <th style="text-align: left;">Cycle</th>
+        <th style="text-align: right;">TOU</th>
+        <th style="text-align: right;">ULO</th>
+        <th style="text-align: right;">Tiered</th>
+        <th style="text-align: left;">Cheapest</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for cycle in comparison.cycles %}
+      <tr>
+        <td>{{ cycle.period.label }}</td>
+        <td style="text-align: right;">${{ "%.2f"|format(cycle.plan_costs["tou"].full_total) }}</td>
+        <td style="text-align: right;">${{ "%.2f"|format(cycle.plan_costs["ulo"].full_total) }}</td>
+        <td style="text-align: right;">${{ "%.2f"|format(cycle.plan_costs["tiered"].full_total) }}</td>
+        <td style="text-transform: uppercase;">{{ cycle.cheapest_plan }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% if chart_paths.compare %}
+  <img data-testid="plan-comparison-chart" src="{{ asset_prefix|default('') }}{{ chart_paths.compare }}" alt="Plan comparison bar chart" style="max-width: 100%;">
+  {% else %}
+  <div data-testid="plan-comparison-chart"></div>
+  {% endif %}
+</section>
+{% endblock %}

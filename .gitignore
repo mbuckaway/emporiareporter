@@ -1,0 +1,25 @@
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+build/
+dist/
+
+# Secrets and generated data — never commit
+config/keys.json
+config/token_cache.json
+data/
+reports/
+
+# Test/coverage artifacts
+.pytest_cache/
+.hypothesis/
+.ruff_cache/
+.coverage
+.coverage.*
+coverage.json
+htmlcov/
+.bin/
+
+# Machine-local editor/agent state — never commit
+.claude/

@@ -1,0 +1,29 @@
+{
+  "_comment": "OPTIONAL full-bill adders for an Alectra (Guelph Rate Zone) RESIDENTIAL customer, on top of the commodity price. Estimate only. Global Adjustment is embedded in the RPP commodity price and is NOT added here. Bill math: subtotal = commodity + variable_per_kwh*kWh + fixed_monthly; minus OER (rate * subtotal); plus HST on (subtotal - OER). Sources: Alectra rate orders EB-2024-0006 (2025) and EB-2025-0055 (2026), oeb.ca, alectrautilities.com/ontario-electricity-rebate.",
+  "delivery": [
+    {
+      "effective": "2026-01-01",
+      "fixed_monthly": 35.99,
+      "smart_metering_monthly": 0.42,
+      "sss_monthly": 0.25,
+      "variable_per_kwh": 0.0235,
+      "components_per_kwh": {"tx_network": 0.0113, "tx_line": 0.0081, "lv": 0.0001, "rider_2026": -0.0007, "wms": 0.0041, "rrrp": 0.0006},
+      "confidence": "medium"
+    },
+    {
+      "effective": "2025-01-01",
+      "expiry": "2025-12-31",
+      "fixed_monthly": 34.81,
+      "smart_metering_monthly": 0.42,
+      "sss_monthly": 0.25,
+      "variable_per_kwh": 0.0257,
+      "components_per_kwh": {"tx_network": 0.0116, "tx_line": 0.0084, "lv": 0.0001, "wms": 0.0041, "rrrp": 0.0015},
+      "confidence": "medium"
+    }
+  ],
+  "oer": [
+    {"effective": "2025-11-01", "rate": 0.235, "confidence": "high"},
+    {"effective": "2000-01-01", "expiry": "2025-10-31", "rate": 0.131, "confidence": "medium", "note": "immediately-prior value; exact pre-2025 OER history unverified"}
+  ],
+  "hst": 0.13
+}
